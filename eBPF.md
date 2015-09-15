@@ -77,14 +77,14 @@ Opcode | Mnemonic      | Pseudocode
 0x77   | rsh dst, imm  | dst >>= imm (logical)
 0x7f   | rsh dst, src  | dst >>= src (logical)
 0x87   | neg dst       | dst = -dst
-0x9f   | mod dst, imm  | dst %= imm
-0x97   | mod dst, src  | dst %= src
-0xaf   | xor dst, imm  | dst ^= imm
-0xa7   | xor dst, src  | dst ^= src
-0xbf   | mov dst, imm  | dst = imm
-0xb7   | mov dst, src  | dst = src
-0xcf   | arsh dst, imm | dst >>= imm (arithmetic)
-0xc7   | arsh dst, src | dst >>= src (arithmetic)
+0x97   | mod dst, imm  | dst %= imm
+0x9f   | mod dst, src  | dst %= src
+0xa7   | xor dst, imm  | dst ^= imm
+0xaf   | xor dst, src  | dst ^= src
+0xb7   | mov dst, imm  | dst = imm
+0xbf   | mov dst, src  | dst = src
+0xc7   | arsh dst, imm | dst >>= imm (arithmetic)
+0xcf   | arsh dst, src | dst >>= src (arithmetic)
 
 ### 32-bit
 
