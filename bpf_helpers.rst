@@ -502,12 +502,12 @@ HELPERS
 
 		Also, be aware that the newer helper
 		**bpf_perf_event_read_value**\ () is recommended over
-		**bpf_perf_event_read*\ () in general. The latter has some ABI
+		**bpf_perf_event_read**\ () in general. The latter has some ABI
 		quirks where error and counter value are used as a return code
 		(which is wrong to do since ranges may overlap). This issue is
-		fixed with bpf_perf_event_read_value(), which at the same time
-		provides more features over the **bpf_perf_event_read**\ ()
-		interface. Please refer to the description of
+		fixed with **bpf_perf_event_read_value**\ (), which at the same
+		time provides more features over the **bpf_perf_event_read**\
+		() interface. Please refer to the description of
 		**bpf_perf_event_read_value**\ () for details.
 	Return
 		The value of the perf event counter read from the map, or a
@@ -1036,7 +1036,7 @@ HELPERS
 	Return
 		0
 
-**int bpf_setsockopt(struct bpf_sock_ops_kern \***\ *bpf_socket*\ **, int** *level*\ **, int** *optname*\ **, char \***\ *optval*\ **, int** *optlen*\ **)**
+**int bpf_setsockopt(struct bpf_sock_ops \***\ *bpf_socket*\ **, int** *level*\ **, int** *optname*\ **, char \***\ *optval*\ **, int** *optlen*\ **)**
 	Description
 		Emulate a call to **setsockopt()** on the socket associated to
 		*bpf_socket*, which must be a full socket. The *level* at
@@ -1110,7 +1110,7 @@ HELPERS
 	Return
 		**SK_PASS** on success, or **SK_DROP** on error.
 
-**int bpf_sock_map_update(struct bpf_sock_ops_kern \***\ *skops*\ **, struct bpf_map \***\ *map*\ **, void \***\ *key*\ **, u64** *flags*\ **)**
+**int bpf_sock_map_update(struct bpf_sock_ops \***\ *skops*\ **, struct bpf_map \***\ *map*\ **, void \***\ *key*\ **, u64** *flags*\ **)**
 	Description
 		Add an entry to, or update a *map* referencing sockets. The
 		*skops* is used as a new value for the entry associated to
@@ -1208,7 +1208,7 @@ HELPERS
 	Return
 		0 on success, or a negative error in case of failure.
 
-**int bpf_perf_prog_read_value(struct bpf_perf_event_data_kern \***\ *ctx*\ **, struct bpf_perf_event_value \***\ *buf*\ **, u32** *buf_size*\ **)**
+**int bpf_perf_prog_read_value(struct bpf_perf_event_data \***\ *ctx*\ **, struct bpf_perf_event_value \***\ *buf*\ **, u32** *buf_size*\ **)**
 	Description
 		For en eBPF program attached to a perf event, retrieve the
 		value of the event counter associated to *ctx* and store it in
@@ -1219,7 +1219,7 @@ HELPERS
 	Return
 		0 on success, or a negative error in case of failure.
 
-**int bpf_getsockopt(struct bpf_sock_ops_kern \***\ *bpf_socket*\ **, int** *level*\ **, int** *optname*\ **, char \***\ *optval*\ **, int** *optlen*\ **)**
+**int bpf_getsockopt(struct bpf_sock_ops \***\ *bpf_socket*\ **, int** *level*\ **, int** *optname*\ **, char \***\ *optval*\ **, int** *optlen*\ **)**
 	Description
 		Emulate a call to **getsockopt()** on the socket associated to
 		*bpf_socket*, which must be a full socket. The *level* at
@@ -1263,7 +1263,7 @@ HELPERS
 	Return
 		0
 
-**int bpf_sock_ops_cb_flags_set(struct bpf_sock_ops_kern \***\ *bpf_sock*\ **, int** *argval*\ **)**
+**int bpf_sock_ops_cb_flags_set(struct bpf_sock_ops \***\ *bpf_sock*\ **, int** *argval*\ **)**
 	Description
 		Attempt to set the value of the **bpf_sock_ops_cb_flags** field
 		for the full TCP socket associated to *bpf_sock_ops* to
@@ -1396,7 +1396,7 @@ HELPERS
 	Return
 		0 on success, or a negative error in case of failure.
 
-**int bpf_bind(struct bpf_sock_addr_kern \***\ *ctx*\ **, struct sockaddr \***\ *addr*\ **, int** *addr_len*\ **)**
+**int bpf_bind(struct bpf_sock_addr \***\ *ctx*\ **, struct sockaddr \***\ *addr*\ **, int** *addr_len*\ **)**
 	Description
 		Bind the socket associated to *ctx* to the address pointed by
 		*addr*, of length *addr_len*. This allows for making outgoing
@@ -1442,6 +1442,40 @@ HELPERS
 		**CONFIG_XFRM** configuration option.
 	Return
 		0 on success, or a negative error in case of failure.
+
+**int bpf_get_stack(struct pt_regs \***\ *regs*\ **, void \***\ *buf*\ **, u32** *size*\ **, u64** *flags*\ **)**
+	Description
+		Return a user or a kernel stack in bpf program provided buffer.
+		To achieve this, the helper needs *ctx*, which is a pointer
+		to the context on which the tracing program is executed.
+		To store the stacktrace, the bpf program provides *buf* with
+		a nonnegative *size*.
+
+		The last argument, *flags*, holds the number of stack frames to
+		skip (from 0 to 255), masked with
+		**BPF_F_SKIP_FIELD_MASK**. The next bits can be used to set
+		the following flags:
+
+		**BPF_F_USER_STACK**
+			Collect a user space stack instead of a kernel stack.
+		**BPF_F_USER_BUILD_ID**
+			Collect buildid+offset instead of ips for user stack,
+			only valid if **BPF_F_USER_STACK** is also specified.
+
+		**bpf_get_stack**\ () can collect up to
+		**PERF_MAX_STACK_DEPTH** both kernel and user frames, subject
+		to sufficient large buffer size. Note that
+		this limit can be controlled with the **sysctl** program, and
+		that it should be manually increased in order to profile long
+		user stacks (such as stacks for Java programs). To do so, use:
+
+		::
+
+			# sysctl kernel.perf_event_max_stack=<new value>
+
+	Return
+		a non-negative value equal to or less than size on success, or
+		a negative error in case of failure.
 
 
 EXAMPLES
