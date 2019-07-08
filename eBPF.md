@@ -158,6 +158,8 @@ Opcode | Mnemonic              | Pseudocode
 
 ## Branch Instructions
 
+### 64-bit
+
 Opcode | Mnemonic            | Pseudocode
 -------|---------------------|------------------------
 0x05   | ja +off             | PC += off
@@ -185,3 +187,33 @@ Opcode | Mnemonic            | Pseudocode
 0xdd   | jsle dst, src, +off | PC += off if dst <= src (signed)
 0x85   | call imm            | Function call
 0x95   | exit                | return r0
+
+### 32-bit
+
+These instructions use only the lower 32 bits of their operands and zero the
+upper 32 bits of the destination register.
+
+Opcode | Mnemonic            | Pseudocode
+-------|---------------------|------------------------
+0x16   | jeq dst, imm, +off  | PC += off if dst == imm
+0x1e   | jeq dst, src, +off  | PC += off if dst == src
+0x26   | jgt dst, imm, +off  | PC += off if dst > imm
+0x2e   | jgt dst, src, +off  | PC += off if dst > src
+0x36   | jge dst, imm, +off  | PC += off if dst >= imm
+0x3e   | jge dst, src, +off  | PC += off if dst >= src
+0xa6   | jlt dst, imm, +off  | PC += off if dst < imm
+0xae   | jlt dst, src, +off  | PC += off if dst < src
+0xb6   | jle dst, imm, +off  | PC += off if dst <= imm
+0xbe   | jle dst, src, +off  | PC += off if dst <= src
+0x46   | jset dst, imm, +off | PC += off if dst & imm
+0x4e   | jset dst, src, +off | PC += off if dst & src
+0x56   | jne dst, imm, +off  | PC += off if dst != imm
+0x5e   | jne dst, src, +off  | PC += off if dst != src
+0x66   | jsgt dst, imm, +off | PC += off if dst > imm (signed)
+0x6e   | jsgt dst, src, +off | PC += off if dst > src (signed)
+0x76   | jsge dst, imm, +off | PC += off if dst >= imm (signed)
+0x7e   | jsge dst, src, +off | PC += off if dst >= src (signed)
+0xc6   | jslt dst, imm, +off | PC += off if dst < imm (signed)
+0xce   | jslt dst, src, +off | PC += off if dst < src (signed)
+0xd6   | jsle dst, imm, +off | PC += off if dst <= imm (signed)
+0xde   | jsle dst, src, +off | PC += off if dst <= src (signed)
