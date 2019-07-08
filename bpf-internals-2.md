@@ -1,4 +1,4 @@
-#BPF Internals - II
+# BPF Internals - II
 *by Suchakra Sharma*
 
 Continuing from where I left [before](https://suchakra.wordpress.com/2015/05/18/bpf-internals-i/), in this post we would see some of the major changes in BPF that have happened recently - how it is evolving to be a very stable and accepted in-kernel VM and can probably be the next big thing - in not just filtering but going beyond. From what I observe, the most attractive feature of BPF is its ability to give access to the developers so that they can execute dynamically compiled code within the kernel - in a limited context, but still securely. This itself is a valuable asset.
