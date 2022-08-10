@@ -234,6 +234,8 @@ Opcode             | Mnemonic                   | Pseudocode
 -------------------|----------------------------|---------------------------------------------------------
 0xdb (imm == 0x00) | add [dst+off], src         | (dst + off) += src
 0xdb (imm == 0x01) | fetch_add [dst+off], src   | src = dst, (dst + off) += src
+0xdb (imm == 0xe1) | xchg [dst+off], src        | src = (dst + off), (dst + off) = src
+0xdb (imm == 0xf1) | cmpxchg [dst+off], src     | r0 = (dst + off), (dst + off) = src if (dst + off) == r0
 
 ### 32-bit
 
@@ -241,3 +243,5 @@ Opcode             | Mnemonic                   | Pseudocode (uint32_t * casts o
 -------|----------------------------|---------------------------------------------------------------------
 0xc3 (imm == 0x00) | add32 [dst+off], src       | (dst + off) += src
 0xc3 (imm == 0x01) | fetch_add32 [dst+off], src | src = dst, (dst + off) += src
+0xc3 (imm == 0xe1) | xchg32 [dst+off], src      | src = (dst + off), (dst + off) = src
+0xc3 (imm == 0xf1) | cmpxchg32 [dst+off], src   | r0 = (dst + off), (dst + off) = src if (dst + off) == r0
