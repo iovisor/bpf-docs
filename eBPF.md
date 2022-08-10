@@ -225,3 +225,17 @@ Opcode | Mnemonic            | Pseudocode
 0xce   | jslt dst, src, +off | PC += off if dst < src (signed)
 0xd6   | jsle dst, imm, +off | PC += off if dst <= imm (signed)
 0xde   | jsle dst, src, +off | PC += off if dst <= src (signed)
+
+## Atomic Instructions
+
+### 64-bit
+
+Opcode             | Mnemonic                   | Pseudocode
+-------------------|----------------------------|---------------------------------------------------------
+0xdb (imm == 0x00) | add [dst+off], src         | (dst + off) += src
+
+### 32-bit
+
+Opcode             | Mnemonic                   | Pseudocode (uint32_t * casts omitted for readability)
+-------|----------------------------|---------------------------------------------------------------------
+0xc3 (imm == 0x00) | add32 [dst+off], src       | (dst + off) += src
