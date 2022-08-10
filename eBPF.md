@@ -193,6 +193,7 @@ Opcode         | Mnemonic            | Pseudocode
 0xdd           | jsle dst, src, +off | PC += off if dst <= src (signed)
 0x85 (src = 0) | call imm            | Helper function call
 0x85 (src = 1) | call imm            | BPF function call
+0x85 (src = 2) | call imm            | Kernel function call
 0x95           | exit                | return r0
 
 ### 32-bit
