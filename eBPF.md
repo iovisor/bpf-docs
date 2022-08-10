@@ -233,9 +233,11 @@ Opcode | Mnemonic            | Pseudocode
 Opcode             | Mnemonic                   | Pseudocode
 -------------------|----------------------------|---------------------------------------------------------
 0xdb (imm == 0x00) | add [dst+off], src         | (dst + off) += src
+0xdb (imm == 0x01) | fetch_add [dst+off], src   | src = dst, (dst + off) += src
 
 ### 32-bit
 
 Opcode             | Mnemonic                   | Pseudocode (uint32_t * casts omitted for readability)
 -------|----------------------------|---------------------------------------------------------------------
 0xc3 (imm == 0x00) | add32 [dst+off], src       | (dst + off) += src
+0xc3 (imm == 0x01) | fetch_add32 [dst+off], src | src = dst, (dst + off) += src
