@@ -132,29 +132,30 @@ Opcode           | Mnemonic | Pseudocode
 
 ## Memory Instructions
 
-Opcode | Mnemonic              | Pseudocode
--------|-----------------------|--------------------------------
-0x18   | lddw dst, imm         | dst = imm
-0x20   | ldabsw src, dst, imm  | See kernel documentation
-0x28   | ldabsh src, dst, imm  | ...
-0x30   | ldabsb src, dst, imm  | ...
-0x38   | ldabsdw src, dst, imm | ...
-0x40   | ldindw src, dst, imm  | ...
-0x48   | ldindh src, dst, imm  | ...
-0x50   | ldindb src, dst, imm  | ...
-0x58   | ldinddw src, dst, imm | ...
-0x61   | ldxw dst, [src+off]   | dst = *(uint32_t *) (src + off)
-0x69   | ldxh dst, [src+off]   | dst = *(uint16_t *) (src + off)
-0x71   | ldxb dst, [src+off]   | dst = *(uint8_t *) (src + off)
-0x79   | ldxdw dst, [src+off]  | dst = *(uint64_t *) (src + off)
-0x62   | stw [dst+off], imm    | *(uint32_t *) (dst + off) = imm
-0x6a   | sth [dst+off], imm    | *(uint16_t *) (dst + off) = imm
-0x72   | stb [dst+off], imm    | *(uint8_t *) (dst + off) = imm
-0x7a   | stdw [dst+off], imm   | *(uint64_t *) (dst + off) = imm
-0x63   | stxw [dst+off], src   | *(uint32_t *) (dst + off) = src
-0x6b   | stxh [dst+off], src   | *(uint16_t *) (dst + off) = src
-0x73   | stxb [dst+off], src   | *(uint8_t *) (dst + off) = src
-0x7b   | stxdw [dst+off], src  | *(uint64_t *) (dst + off) = src
+Opcode          | Mnemonic              | Pseudocode
+----------------|-----------------------|-----------------------------------------------------
+0x18 (src == 0) | lddw dst, imm         | dst = imm
+0x18 (src == 1) | lddw dst, map         | dst = imm with imm == map fd
+0x20            | ldabsw src, dst, imm  | See kernel documentation
+0x28            | ldabsh src, dst, imm  | ...
+0x30            | ldabsb src, dst, imm  | ...
+0x38            | ldabsdw src, dst, imm | ...
+0x40            | ldindw src, dst, imm  | ...
+0x48            | ldindh src, dst, imm  | ...
+0x50            | ldindb src, dst, imm  | ...
+0x58            | ldinddw src, dst, imm | ...
+0x61            | ldxw dst, [src+off]   | dst = *(uint32_t *) (src + off)
+0x69            | ldxh dst, [src+off]   | dst = *(uint16_t *) (src + off)
+0x71            | ldxb dst, [src+off]   | dst = *(uint8_t *) (src + off)
+0x79            | ldxdw dst, [src+off]  | dst = *(uint64_t *) (src + off)
+0x62            | stw [dst+off], imm    | *(uint32_t *) (dst + off) = imm
+0x6a            | sth [dst+off], imm    | *(uint16_t *) (dst + off) = imm
+0x72            | stb [dst+off], imm    | *(uint8_t *) (dst + off) = imm
+0x7a            | stdw [dst+off], imm   | *(uint64_t *) (dst + off) = imm
+0x63            | stxw [dst+off], src   | *(uint32_t *) (dst + off) = src
+0x6b            | stxh [dst+off], src   | *(uint16_t *) (dst + off) = src
+0x73            | stxb [dst+off], src   | *(uint8_t *) (dst + off) = src
+0x7b            | stxdw [dst+off], src  | *(uint64_t *) (dst + off) = src
 
 ## Branch Instructions
 
