@@ -166,33 +166,34 @@ Opcode          | Mnemonic              | Pseudocode
 
 ### 64-bit
 
-Opcode | Mnemonic            | Pseudocode
--------|---------------------|------------------------
-0x05   | ja +off             | PC += off
-0x15   | jeq dst, imm, +off  | PC += off if dst == imm
-0x1d   | jeq dst, src, +off  | PC += off if dst == src
-0x25   | jgt dst, imm, +off  | PC += off if dst > imm
-0x2d   | jgt dst, src, +off  | PC += off if dst > src
-0x35   | jge dst, imm, +off  | PC += off if dst >= imm
-0x3d   | jge dst, src, +off  | PC += off if dst >= src
-0xa5   | jlt dst, imm, +off  | PC += off if dst < imm
-0xad   | jlt dst, src, +off  | PC += off if dst < src
-0xb5   | jle dst, imm, +off  | PC += off if dst <= imm
-0xbd   | jle dst, src, +off  | PC += off if dst <= src
-0x45   | jset dst, imm, +off | PC += off if dst & imm
-0x4d   | jset dst, src, +off | PC += off if dst & src
-0x55   | jne dst, imm, +off  | PC += off if dst != imm
-0x5d   | jne dst, src, +off  | PC += off if dst != src
-0x65   | jsgt dst, imm, +off | PC += off if dst > imm (signed)
-0x6d   | jsgt dst, src, +off | PC += off if dst > src (signed)
-0x75   | jsge dst, imm, +off | PC += off if dst >= imm (signed)
-0x7d   | jsge dst, src, +off | PC += off if dst >= src (signed)
-0xc5   | jslt dst, imm, +off | PC += off if dst < imm (signed)
-0xcd   | jslt dst, src, +off | PC += off if dst < src (signed)
-0xd5   | jsle dst, imm, +off | PC += off if dst <= imm (signed)
-0xdd   | jsle dst, src, +off | PC += off if dst <= src (signed)
-0x85   | call imm            | Function call
-0x95   | exit                | return r0
+Opcode         | Mnemonic            | Pseudocode
+---------------|---------------------|------------------------
+0x05           | ja +off             | PC += off
+0x15           | jeq dst, imm, +off  | PC += off if dst == imm
+0x1d           | jeq dst, src, +off  | PC += off if dst == src
+0x25           | jgt dst, imm, +off  | PC += off if dst > imm
+0x2d           | jgt dst, src, +off  | PC += off if dst > src
+0x35           | jge dst, imm, +off  | PC += off if dst >= imm
+0x3d           | jge dst, src, +off  | PC += off if dst >= src
+0xa5           | jlt dst, imm, +off  | PC += off if dst < imm
+0xad           | jlt dst, src, +off  | PC += off if dst < src
+0xb5           | jle dst, imm, +off  | PC += off if dst <= imm
+0xbd           | jle dst, src, +off  | PC += off if dst <= src
+0x45           | jset dst, imm, +off | PC += off if dst & imm
+0x4d           | jset dst, src, +off | PC += off if dst & src
+0x55           | jne dst, imm, +off  | PC += off if dst != imm
+0x5d           | jne dst, src, +off  | PC += off if dst != src
+0x65           | jsgt dst, imm, +off | PC += off if dst > imm (signed)
+0x6d           | jsgt dst, src, +off | PC += off if dst > src (signed)
+0x75           | jsge dst, imm, +off | PC += off if dst >= imm (signed)
+0x7d           | jsge dst, src, +off | PC += off if dst >= src (signed)
+0xc5           | jslt dst, imm, +off | PC += off if dst < imm (signed)
+0xcd           | jslt dst, src, +off | PC += off if dst < src (signed)
+0xd5           | jsle dst, imm, +off | PC += off if dst <= imm (signed)
+0xdd           | jsle dst, src, +off | PC += off if dst <= src (signed)
+0x85 (src = 0) | call imm            | Helper function call
+0x85 (src = 1) | call imm            | BPF function call
+0x95           | exit                | return r0
 
 ### 32-bit
 
