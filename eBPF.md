@@ -139,6 +139,8 @@ Opcode          | Mnemonic              | Pseudocode
 0x18 (src == 2) | lddw dst, map value   | dst = map[0] + insn[1].imm with insn[0] == map fd
 0x18 (src == 3) | lddw dst, kernel var  | dst = imm with imm == BTF id of var
 0x18 (src == 4) | lddw dst, BPF func    | dst = imm with imm == insn offset of BPF callback
+0x18 (src == 5) | lddw dst, map         | dst = imm with imm == map index
+0x18 (src == 6) | lddw dst, map value   | dst = map[0] + insn[1].imm with insn[0] == map index
 0x20            | ldabsw src, dst, imm  | See kernel documentation
 0x28            | ldabsh src, dst, imm  | ...
 0x30            | ldabsb src, dst, imm  | ...
