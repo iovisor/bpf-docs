@@ -132,56 +132,128 @@ Opcode           | Mnemonic | Pseudocode
 
 ## Memory Instructions
 
-Opcode | Mnemonic              | Pseudocode
--------|-----------------------|--------------------------------
-0x18   | lddw dst, imm         | dst = imm
-0x20   | ldabsw src, dst, imm  | See kernel documentation
-0x28   | ldabsh src, dst, imm  | ...
-0x30   | ldabsb src, dst, imm  | ...
-0x38   | ldabsdw src, dst, imm | ...
-0x40   | ldindw src, dst, imm  | ...
-0x48   | ldindh src, dst, imm  | ...
-0x50   | ldindb src, dst, imm  | ...
-0x58   | ldinddw src, dst, imm | ...
-0x61   | ldxw dst, [src+off]   | dst = *(uint32_t *) (src + off)
-0x69   | ldxh dst, [src+off]   | dst = *(uint16_t *) (src + off)
-0x71   | ldxb dst, [src+off]   | dst = *(uint8_t *) (src + off)
-0x79   | ldxdw dst, [src+off]  | dst = *(uint64_t *) (src + off)
-0x62   | stw [dst+off], imm    | *(uint32_t *) (dst + off) = imm
-0x6a   | sth [dst+off], imm    | *(uint16_t *) (dst + off) = imm
-0x72   | stb [dst+off], imm    | *(uint8_t *) (dst + off) = imm
-0x7a   | stdw [dst+off], imm   | *(uint64_t *) (dst + off) = imm
-0x63   | stxw [dst+off], src   | *(uint32_t *) (dst + off) = src
-0x6b   | stxh [dst+off], src   | *(uint16_t *) (dst + off) = src
-0x73   | stxb [dst+off], src   | *(uint8_t *) (dst + off) = src
-0x7b   | stxdw [dst+off], src  | *(uint64_t *) (dst + off) = src
+Opcode          | Mnemonic              | Pseudocode
+----------------|-----------------------|-----------------------------------------------------
+0x18 (src == 0) | lddw dst, imm         | dst = imm
+0x18 (src == 1) | lddw dst, map         | dst = imm with imm == map fd
+0x18 (src == 2) | lddw dst, map value   | dst = map[0] + insn[1].imm with insn[0] == map fd
+0x18 (src == 3) | lddw dst, kernel var  | dst = imm with imm == BTF id of var
+0x18 (src == 4) | lddw dst, BPF func    | dst = imm with imm == insn offset of BPF callback
+0x18 (src == 5) | lddw dst, map         | dst = imm with imm == map index
+0x18 (src == 6) | lddw dst, map value   | dst = map[0] + insn[1].imm with insn[0] == map index
+0x20            | ldabsw src, dst, imm  | See kernel documentation
+0x28            | ldabsh src, dst, imm  | ...
+0x30            | ldabsb src, dst, imm  | ...
+0x38            | ldabsdw src, dst, imm | ...
+0x40            | ldindw src, dst, imm  | ...
+0x48            | ldindh src, dst, imm  | ...
+0x50            | ldindb src, dst, imm  | ...
+0x58            | ldinddw src, dst, imm | ...
+0x61            | ldxw dst, [src+off]   | dst = *(uint32_t *) (src + off)
+0x69            | ldxh dst, [src+off]   | dst = *(uint16_t *) (src + off)
+0x71            | ldxb dst, [src+off]   | dst = *(uint8_t *) (src + off)
+0x79            | ldxdw dst, [src+off]  | dst = *(uint64_t *) (src + off)
+0x62            | stw [dst+off], imm    | *(uint32_t *) (dst + off) = imm
+0x6a            | sth [dst+off], imm    | *(uint16_t *) (dst + off) = imm
+0x72            | stb [dst+off], imm    | *(uint8_t *) (dst + off) = imm
+0x7a            | stdw [dst+off], imm   | *(uint64_t *) (dst + off) = imm
+0x63            | stxw [dst+off], src   | *(uint32_t *) (dst + off) = src
+0x6b            | stxh [dst+off], src   | *(uint16_t *) (dst + off) = src
+0x73            | stxb [dst+off], src   | *(uint8_t *) (dst + off) = src
+0x7b            | stxdw [dst+off], src  | *(uint64_t *) (dst + off) = src
 
 ## Branch Instructions
 
+### 64-bit
+
+Opcode         | Mnemonic            | Pseudocode
+---------------|---------------------|------------------------
+0x05           | ja +off             | PC += off
+0x15           | jeq dst, imm, +off  | PC += off if dst == imm
+0x1d           | jeq dst, src, +off  | PC += off if dst == src
+0x25           | jgt dst, imm, +off  | PC += off if dst > imm
+0x2d           | jgt dst, src, +off  | PC += off if dst > src
+0x35           | jge dst, imm, +off  | PC += off if dst >= imm
+0x3d           | jge dst, src, +off  | PC += off if dst >= src
+0xa5           | jlt dst, imm, +off  | PC += off if dst < imm
+0xad           | jlt dst, src, +off  | PC += off if dst < src
+0xb5           | jle dst, imm, +off  | PC += off if dst <= imm
+0xbd           | jle dst, src, +off  | PC += off if dst <= src
+0x45           | jset dst, imm, +off | PC += off if dst & imm
+0x4d           | jset dst, src, +off | PC += off if dst & src
+0x55           | jne dst, imm, +off  | PC += off if dst != imm
+0x5d           | jne dst, src, +off  | PC += off if dst != src
+0x65           | jsgt dst, imm, +off | PC += off if dst > imm (signed)
+0x6d           | jsgt dst, src, +off | PC += off if dst > src (signed)
+0x75           | jsge dst, imm, +off | PC += off if dst >= imm (signed)
+0x7d           | jsge dst, src, +off | PC += off if dst >= src (signed)
+0xc5           | jslt dst, imm, +off | PC += off if dst < imm (signed)
+0xcd           | jslt dst, src, +off | PC += off if dst < src (signed)
+0xd5           | jsle dst, imm, +off | PC += off if dst <= imm (signed)
+0xdd           | jsle dst, src, +off | PC += off if dst <= src (signed)
+0x85 (src = 0) | call imm            | Helper function call
+0x85 (src = 1) | call imm            | BPF function call
+0x85 (src = 2) | call imm            | Kernel function call
+0x95           | exit                | return r0
+
+### 32-bit
+
+These instructions use only the lower 32 bits of their operands and zero the
+upper 32 bits of the destination register.
+
 Opcode | Mnemonic            | Pseudocode
 -------|---------------------|------------------------
-0x05   | ja +off             | PC += off
-0x15   | jeq dst, imm, +off  | PC += off if dst == imm
-0x1d   | jeq dst, src, +off  | PC += off if dst == src
-0x25   | jgt dst, imm, +off  | PC += off if dst > imm
-0x2d   | jgt dst, src, +off  | PC += off if dst > src
-0x35   | jge dst, imm, +off  | PC += off if dst >= imm
-0x3d   | jge dst, src, +off  | PC += off if dst >= src
-0xa5   | jlt dst, imm, +off  | PC += off if dst < imm
-0xad   | jlt dst, src, +off  | PC += off if dst < src
-0xb5   | jle dst, imm, +off  | PC += off if dst <= imm
-0xbd   | jle dst, src, +off  | PC += off if dst <= src
-0x45   | jset dst, imm, +off | PC += off if dst & imm
-0x4d   | jset dst, src, +off | PC += off if dst & src
-0x55   | jne dst, imm, +off  | PC += off if dst != imm
-0x5d   | jne dst, src, +off  | PC += off if dst != src
-0x65   | jsgt dst, imm, +off | PC += off if dst > imm (signed)
-0x6d   | jsgt dst, src, +off | PC += off if dst > src (signed)
-0x75   | jsge dst, imm, +off | PC += off if dst >= imm (signed)
-0x7d   | jsge dst, src, +off | PC += off if dst >= src (signed)
-0xc5   | jslt dst, imm, +off | PC += off if dst < imm (signed)
-0xcd   | jslt dst, src, +off | PC += off if dst < src (signed)
-0xd5   | jsle dst, imm, +off | PC += off if dst <= imm (signed)
-0xdd   | jsle dst, src, +off | PC += off if dst <= src (signed)
-0x85   | call imm            | Function call
-0x95   | exit                | return r0
+0x16   | jeq dst, imm, +off  | PC += off if dst == imm
+0x1e   | jeq dst, src, +off  | PC += off if dst == src
+0x26   | jgt dst, imm, +off  | PC += off if dst > imm
+0x2e   | jgt dst, src, +off  | PC += off if dst > src
+0x36   | jge dst, imm, +off  | PC += off if dst >= imm
+0x3e   | jge dst, src, +off  | PC += off if dst >= src
+0xa6   | jlt dst, imm, +off  | PC += off if dst < imm
+0xae   | jlt dst, src, +off  | PC += off if dst < src
+0xb6   | jle dst, imm, +off  | PC += off if dst <= imm
+0xbe   | jle dst, src, +off  | PC += off if dst <= src
+0x46   | jset dst, imm, +off | PC += off if dst & imm
+0x4e   | jset dst, src, +off | PC += off if dst & src
+0x56   | jne dst, imm, +off  | PC += off if dst != imm
+0x5e   | jne dst, src, +off  | PC += off if dst != src
+0x66   | jsgt dst, imm, +off | PC += off if dst > imm (signed)
+0x6e   | jsgt dst, src, +off | PC += off if dst > src (signed)
+0x76   | jsge dst, imm, +off | PC += off if dst >= imm (signed)
+0x7e   | jsge dst, src, +off | PC += off if dst >= src (signed)
+0xc6   | jslt dst, imm, +off | PC += off if dst < imm (signed)
+0xce   | jslt dst, src, +off | PC += off if dst < src (signed)
+0xd6   | jsle dst, imm, +off | PC += off if dst <= imm (signed)
+0xde   | jsle dst, src, +off | PC += off if dst <= src (signed)
+
+## Atomic Instructions
+
+### 64-bit
+
+Opcode             | Mnemonic                   | Pseudocode
+-------------------|----------------------------|---------------------------------------------------------
+0xdb (imm == 0x00) | add [dst+off], src         | (dst + off) += src
+0xdb (imm == 0x40) | or [dst+off], src          | (dst + off) \|= src
+0xdb (imm == 0x50) | and [dst+off], src         | (dst + off) &= src
+0xdb (imm == 0xa0) | xor [dst+off], src         | (dst + off) ^= src
+0xdb (imm == 0x01) | fetch_add [dst+off], src   | src = dst, (dst + off) += src
+0xdb (imm == 0x41) | fetch_or [dst+off], src    | src = dst, (dst + off) \|= src
+0xdb (imm == 0x51) | fetch_and [dst+off], src   | src = dst, (dst + off) &= src
+0xdb (imm == 0xa1) | fetch_xor [dst+off], src   | src = dst, (dst + off) ^= src
+0xdb (imm == 0xe1) | xchg [dst+off], src        | src = (dst + off), (dst + off) = src
+0xdb (imm == 0xf1) | cmpxchg [dst+off], src     | r0 = (dst + off), (dst + off) = src if (dst + off) == r0
+
+### 32-bit
+
+Opcode             | Mnemonic                   | Pseudocode (uint32_t * casts omitted for readability)
+-------|----------------------------|---------------------------------------------------------------------
+0xc3 (imm == 0x00) | add32 [dst+off], src       | (dst + off) += src
+0xc3 (imm == 0x40) | or32 [dst+off], src        | (dst + off) \|= src
+0xc3 (imm == 0x50) | and32 [dst+off], src       | (dst + off) &= src
+0xc3 (imm == 0xa0) | xor32 [dst+off], src       | (dst + off) ^= src
+0xc3 (imm == 0x01) | fetch_add32 [dst+off], src | src = dst, (dst + off) += src
+0xc3 (imm == 0x41) | fetch_or32 [dst+off], src  | src = dst, (dst + off) \|= src
+0xc3 (imm == 0x51) | fetch_and32 [dst+off], src | src = dst, (dst + off) &= src
+0xc3 (imm == 0xa1) | fetch_xor32 [dst+off], src | src = dst, (dst + off) ^= src
+0xc3 (imm == 0xe1) | xchg32 [dst+off], src      | src = (dst + off), (dst + off) = src
+0xc3 (imm == 0xf1) | cmpxchg32 [dst+off], src   | r0 = (dst + off), (dst + off) = src if (dst + off) == r0
